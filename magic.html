@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间预言魔术 - 视觉欺骗版</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #000000, #0f0f0f);
+            color: #fff;
+            text-align: center;
+            padding: 40px;
+            margin: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            color: #ff66cc;
+            text-shadow: 0 0 10px rgba(255, 102, 204, 0.5);
+        }
+        input {
+            font-size: 20px;
+            padding: 10px;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            border: 2px solid #ff66cc;
+            border-radius: 8px;
+            outline: none;
+            background-color: #222;
+            color: #fff;
+        }
+        button {
+            background-color: #ff66cc;
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background-color: #ff33bb;
+            transform: scale(1.05);
+        }
+        .number-box {
+            font-size: 24px;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 200px;
+        }
+        .screen {
+            font-size: 28px;
+            color: #00ff00;
+            background-color: #000;
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 400px;
+            text-align: right;
+            border: 5px solid #333;
+            border-radius: 10px;
+            min-height: 40px;
+            font-family: 'Courier New', monospace;
+        }
+        .glitch {
+            animation: glitch 0.3s infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 终极时间预言 🔮</h1>
+
+        <!-- 第一步：观众A输入 -->
+        <div id="step1">
+            <h2>第一位观众</h2>
+            <p>请输入一个任意数字：</p >
+            <input type="number" id="input1" placeholder="输入第一个数字">
+            <button onclick="next1()">确定</button>
+        </div>
+
+        <!-- 第二步：观众B输入 -->
+        <div id="step2" class="hidden">
+            <h2>第二位观众</h2>
+            <p>第一位数字：<span id="d1" class="number-box"></span></p >
+            <p>请输入第二个任意数字：</p >
+            <input type="number" id="input2" placeholder="输入第二个数字">
+            <button onclick="next2()">确定</button>
+        </div>
+
+        <!-- 第三步：观众C输入 -->
+        <div id="step3" class="hidden">
+            <h2>第三位观众</h2>
+            <p>前两位数字： <span id="d2" class="number-box"></span> | <span id="d3" class="number-box"></span></p >
+            <p>请输入最后一个数字（请记住您输入的数字）：</p >
+            <input type="number" id="input3" placeholder="输入第三个数字">
+            <button onclick="finalCheck()">点击确认并校验输入</button>
+        </div>
+
+        <!-- 第四步：屏幕展示 (关键欺骗步骤) -->
+        <div id="step4" class="hidden">
+            <h2>正在读取记忆...</h2>
+            <div class="screen" id="screen">0</div>
+            <button onclick="revealTrueResult()" id="btn4">揭晓最终真相</button>
+        </div>
+
+        <!-- 结果 -->
+        <div id="result" class="hidden">
+            <div class="screen" style="font-size: 36px; color: #ffff00;">
+                最终总和是：<br>
+                <span id="sum"></span>
+            </div>
+            <div id="prophecy" style="font-size: 24px; margin-top: 20px; color: #00ff00;"></div>
+        </div>
+    </div>
+
+    <script>
+        let num1, num2, userFinalInput;
+        let targetNumber, magicFinalNum;
+
+        function next1() {
+            num1 = parseInt(document.getElementById("input1").value) || 0;
+            document.getElementById("d1").textContent = num1;
+            document.getElementById("step1").classList.add("hidden");
+            document.getElementById("step2").classList.remove("hidden");
+        }
+
+        function next2() {
+            num2 = parseInt(document.getElementById("input2").value) || 0;
+            document.getElementById("d2").textContent = num1;
+            document.getElementById("d3").textContent = num2;
+            document.getElementById("step2").classList.add("hidden");
+            document.getElementById("step3").classList.remove("hidden");
+        }
+
+        function finalCheck() {
+            // 1. 获取观众C输入的数字
+            userFinalInput = document.getElementById("input3").value;
+            if (!userFinalInput) {
+                alert("请输入一个数字！");
+                return;
+            }
+
+            // 2. 生成目标时间
+            const now = new Date();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            targetNumber = parseInt(month + day + hours + minutes);
+
+            // 3. 计算真正的魔术数字 (第三个数字)
+            magicFinalNum = targetNumber - (num1 + num2);
+
+            // 4. 切换界面到屏幕展示
+            document.getElementById("step3").classList.add("hidden");
+            document.getElementById("step4").classList.remove("hidden");
+
+            // 5. 屏幕上先显示观众输入的数字 (建立信任)
+            document.getElementById("screen").textContent = `您输入的数字是：${userFinalInput}`;
+        }
+
+        function revealTrueResult() {
+            const screen = document.getElementById("screen");
+            
+            // 1. 视觉特效：屏幕闪烁/乱码
+            screen.classList.add("glitch");
+            screen.textContent = "信号干扰中...正在读取真实数据...";
+            
+            // 2. 模拟延迟，增强悬念
+            setTimeout(() => {
+                // 3. 核心替换：将屏幕上的数字从 "观众输入" 变为 "预定数字"
+                screen.classList.remove("glitch");
+                screen.textContent = `真实数据已覆盖：${magicFinalNum}`;
+                
+                // 4. 更新最终结果
+                setTimeout(() => {
+                    document.getElementById("step4").classList.add("hidden");
+                    document.getElementById("result").classList.remove("hidden");
+                    
+                    const finalSum = num1 + num2 + magicFinalNum;
+                    
+                    // 解析时间
+                    const month = Math.floor(finalSum / 1000000);
+                    const day = Math.floor((finalSum % 1000000) / 10000);
+                    const hour = Math.floor((finalSum % 10000) / 100);
+                    const minute = finalSum % 100;
+
+                    document.getElementById("sum").textContent = finalSum;
+                    document.getElementById("prophecy").textContent = 
+                        `这一刻被精准预言为：${month}月${day}日 ${hour}点${minute}分`;
+                }, 1500);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
